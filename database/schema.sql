@@ -64,20 +64,30 @@ CREATE TABLE gpa_records (
 
 -- Insert sample data
 INSERT INTO students (matric_number, name, blood_group, state_of_origin, phone, hobbies) VALUES
-('CS001', 'John Doe', 'O+', 'Lagos', '08012345678', 'Reading, Football'),
-('CS002', 'Jane Smith', 'A+', 'Abuja', '08087654321', 'Swimming, Coding'),
-('CS003', 'Mike Johnson', 'B+', 'Kano', '08011223344', 'Gaming, Music');
+('22/0097', 'George George', 'A+', 'AkwaIBom State', '09163037014', 'Playing Chess, Basketball'),
+('22/0330', 'Olaifa Oladapo Fuad', 'O+', 'Ogun State', '09043447184', 'Reading, Coding'),
+('22/0054', 'Ikhioya clarence', 'B+', 'Edo state', '09063380716', 'Watching movies, Music'),
+('22/2900', 'okorie noble chibueze', 'O+', 'Imo state', '09130129226', 'traveling, Music'),
+('22/0272', 'Kalejaye Abdulrahman Oluwatobi', 'O+', 'Ogun state', '08166625250', 'Reading, Music'),
+('22/0115', 'Ezembaukwu Vincent', 'O+', 'Anambra State', '09068936312', 'Watching movies, Music'),
+('22/0127', 'Kalu Joshua Uwaoma', 'O+', 'Abia state', '08064270255', 'Music'),
+('22/0087', 'Eze Sandra', 'O-', 'Anambra state', '09075892154', 'Playing games, Seeing Movies');
 
 INSERT INTO courses (course_code, course_title, credit_unit) VALUES
-('CS101', 'Introduction to Programming', 3),
-('CS102', 'Database Systems', 3),
-('CS103', 'Web Development', 2),
-('CS104', 'Mathematics for Computing', 3);
+('SENG412', 'Internet Technologies', 3),
+('COSC430', 'Hands-on JAVA training', 1),
+('SENG408', 'Modeling And Simulation', 3),
+('SENG490', 'Research Project', 3),
+('SENG406', 'Formal Methods', 3),
+('SENG404', 'Human Computer Interaction', 3),
+('SENG402', 'Software Quality Assurance', 3),
+('GEDS420', 'Biblical Principles', 2);
 
-INSERT INTO student_courses (student_id, course_id) VALUES
-(1, 1), (1, 2), (1, 3),
-(2, 1), (2, 3), (2, 4),
-(3, 2), (3, 4);
+-- This automatically creates all possible combinations
+INSERT INTO student_courses (student_id, course_id)
+SELECT s.id, c.id
+FROM students s
+CROSS JOIN courses c;
 
 INSERT INTO employees (name, position) VALUES
 ('Dr. James Wilson', 'Professor'),
