@@ -7,6 +7,15 @@ include '../includes/navbar.php';
 // Fetch all students for dropdown
 $students_query = "SELECT id, name, matric_number FROM students ORDER BY name";
 $students_result = mysqli_query($conn, $students_query);
+// Fetch latest GPA
+$gpa_query = mysqli_query($conn,
+    "SELECT gpa FROM gpa_records
+     WHERE student_id = $selected_student_id
+     ORDER BY id DESC
+     LIMIT 1");
+
+$gpa_data = mysqli_fetch_assoc($gpa_query);
+
 
 // Get selected student if any
 $selected_student_id = isset($_GET['student_id']) ? (int)$_GET['student_id'] : 0;

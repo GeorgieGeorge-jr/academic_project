@@ -83,6 +83,17 @@ CREATE TABLE course_assessments (
     UNIQUE KEY unique_student_course (student_id, course_id)
 );
 
+CREATE TABLE gpa_records
+(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT,
+    total_grade_points DECIMAL(10,2) NOT NULL,
+    total_credit_units INT NOT NULL,
+    gpa DECIMAL(3,2) NOT NULL,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
 -- Insert sample data
 INSERT INTO students (matric_number, name, blood_group, state_of_origin, phone, hobbies) VALUES
 ('22/0097', 'George George', 'A+', 'AkwaIBom State', '09163037014', 'Playing Chess, Basketball'),
@@ -92,7 +103,8 @@ INSERT INTO students (matric_number, name, blood_group, state_of_origin, phone, 
 ('22/0272', 'Kalejaye Abdulrahman Oluwatobi', 'O+', 'Ogun state', '08166625250', 'Reading, Music'),
 ('22/0115', 'Ezembaukwu Vincent', 'O+', 'Anambra State', '09068936312', 'Watching movies, Music'),
 ('22/0127', 'Kalu Joshua Uwaoma', 'O+', 'Abia state', '08064270255', 'Music'),
-('22/0087', 'Eze Sandra', 'O-', 'Anambra state', '09075892154', 'Playing games, Seeing Movies');
+('22/0087', 'Eze Sandra', 'O-', 'Anambra state', '09075892154', 'Playing games, Seeing Movies'),
+('22/0088', 'Eze-Bekee David', 'A+', 'Abia state', '08123199386', 'Playing games, Watching Series');
 
 INSERT INTO courses (course_code, course_title, credit_unit) VALUES
 ('SENG412', 'Internet Technologies', 3),
