@@ -62,6 +62,27 @@ CREATE TABLE gpa_records (
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
 );
 
+-- Add this new table for course assessments
+CREATE TABLE course_assessments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT,
+    course_id INT,
+    quiz_1 DECIMAL(5,2) DEFAULT 0,
+    quiz_2 DECIMAL(5,2) DEFAULT 0,
+    quiz_3 DECIMAL(5,2) DEFAULT 0,
+    mid_semester DECIMAL(5,2) DEFAULT 0,
+    project DECIMAL(5,2) DEFAULT 0,
+    attendance DECIMAL(5,2) DEFAULT 0,
+    exam DECIMAL(5,2) DEFAULT 0,
+    total_score DECIMAL(5,2) DEFAULT 0,
+    grade VARCHAR(2),
+    grade_point DECIMAL(3,2),
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_student_course (student_id, course_id)
+);
+
 -- Insert sample data
 INSERT INTO students (matric_number, name, blood_group, state_of_origin, phone, hobbies) VALUES
 ('22/0097', 'George George', 'A+', 'AkwaIBom State', '09163037014', 'Playing Chess, Basketball'),
@@ -87,7 +108,8 @@ INSERT INTO courses (course_code, course_title, credit_unit) VALUES
 INSERT INTO student_courses (student_id, course_id)
 SELECT s.id, c.id
 FROM students s
-CROSS JOIN courses c;
+CROSS JOIN courses c
+ORDER BY s.id, c.id;
 
 INSERT INTO employees (name, position) VALUES
 ('Dr. James Wilson', 'Professor'),

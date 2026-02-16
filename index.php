@@ -65,28 +65,40 @@ include 'includes/navbar.php';
         }
         
         // Helper function to display student card
-        function displayStudentCard($student, $courses) {
-            ?>
-            <div class="card">
-                <div class="card-header">
-                    <?php echo htmlspecialchars($student['name']); ?>
-                </div>
-                <div class="card-body">
-                    <p><strong>Matric Number:</strong> <?php echo htmlspecialchars($student['matric_number']); ?></p>
-                    <p><strong>Registered Courses:</strong></p>
-                    <?php if (empty($courses)): ?>
-                        <p>No courses registered</p>
-                    <?php else: ?>
-                        <ul style="margin-left: 20px;">
-                            <?php foreach ($courses as $course): ?>
-                                <li><?php echo htmlspecialchars($course['code'] . ' - ' . $course['title']); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <?php
-        }
+        // Replace the displayStudentCard function in index.php with this:
+
+function displayStudentCard($student, $courses) {
+    ?>
+    <div class="card">
+        <div class="card-header">
+            <?php echo htmlspecialchars($student['name']); ?>
+        </div>
+        <div class="card-body">
+            <p><strong>Matric Number:</strong> <?php echo htmlspecialchars($student['matric_number']); ?></p>
+            <p><strong>Registered Courses (<?php echo count($courses); ?> total):</strong></p>
+            <?php if (empty($courses)): ?>
+                <p class="alert alert-error">No courses registered</p>
+            <?php else: ?>
+                <ul style="margin-left: 20px; list-style-type: none; padding: 0;">
+                    <?php 
+                    $total_credits = 0;
+                    foreach ($courses as $course): 
+                        // You might need to fetch credit units from database
+                    ?>
+                        <li style="margin-bottom: 5px; padding: 5px; background: #f8f9fa; border-radius: 3px;">
+                            <strong><?php echo htmlspecialchars($course['code']); ?></strong> - 
+                            <?php echo htmlspecialchars($course['title']); ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <p style="margin-top: 10px; color: #1e3c72;">
+                    <strong>Total Courses: <?php echo count($courses); ?>/8</strong>
+                </p>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php
+}
         ?>
     </div>
 </div>

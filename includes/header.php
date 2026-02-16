@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Project - Student Management System</title>
-    <!-- Link to external CSS file -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Academic Project</title>
+    <link rel="stylesheet" href="/academic_project/assets/css/style.css">
 </head>
 <body>
-    <!-- Main container for consistent layout -->
-    <div class="container"></div>
+
+<nav>
+    <a href="/academic_project/index.php">Home</a> |
+    <a href="/academic_project/pages/payroll.php">Payroll</a> |
+    <a href="/academic_project/pages/gpa.php">GPA</a> |
+    <a href="/academic_project/pages/personal_details.php">Personal Details</a>
+</nav>
+
+<hr>
