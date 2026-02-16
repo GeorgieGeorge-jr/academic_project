@@ -8,15 +8,35 @@ include '../includes/navbar.php';
 $students_query = "SELECT * FROM students ORDER BY name";
 $students_result = mysqli_query($conn, $students_query);
 
-// Get selected student or default to first
-$selected_student_id = isset($_GET['student_id']) ? (int)$_GET['student_id'] : 1;
+// Load students into array safely
+$students = [];
+if ($students_result) {
+    while ($row = mysqli_fetch_assoc($students_result)) {
+        $students[] = $row;
+    }
+}
+
+// Get selected student or default to first available student
+$selected_student_id = isset($_GET['student_id']) ? (int)$_GET['student_id'] : null;
+if ($selected_student_id === null) {
+    if (!empty($students)) {
+        $selected_student_id = (int)$students[0]['id'];
+    } else {
+        $selected_student_id = 0; // no students
+    }
+}
 
 // Fetch student details
-$student_stmt = mysqli_prepare($conn, "SELECT * FROM students WHERE id = ?");
-mysqli_stmt_bind_param($student_stmt, "i", $selected_student_id);
-mysqli_stmt_execute($student_stmt);
-$student_result = mysqli_stmt_get_result($student_stmt);
-$student = mysqli_fetch_assoc($student_result);
+$student = null;
+if ($selected_student_id > 0) {
+    $student_stmt = mysqli_prepare($conn, "SELECT * FROM students WHERE id = ?");
+    if ($student_stmt) {
+        mysqli_stmt_bind_param($student_stmt, "i", $selected_student_id);
+        mysqli_stmt_execute($student_stmt);
+        $student_result = mysqli_stmt_get_result($student_stmt);
+        $student = mysqli_fetch_assoc($student_result);
+    }
+}
 
 // Fetch latest GPA for this student
 $gpa_stmt = mysqli_prepare($conn, 
@@ -24,10 +44,13 @@ $gpa_stmt = mysqli_prepare($conn,
      WHERE student_id = ? 
      ORDER BY date_created DESC LIMIT 1"
 );
-mysqli_stmt_bind_param($gpa_stmt, "i", $selected_student_id);
-mysqli_stmt_execute($gpa_stmt);
-$gpa_result = mysqli_stmt_get_result($gpa_stmt);
-$gpa_record = mysqli_fetch_assoc($gpa_result);
+$gpa_record = null;
+if ($selected_student_id > 0 && $gpa_stmt) {
+    mysqli_stmt_bind_param($gpa_stmt, "i", $selected_student_id);
+    mysqli_stmt_execute($gpa_stmt);
+    $gpa_result = mysqli_stmt_get_result($gpa_stmt);
+    $gpa_record = mysqli_fetch_assoc($gpa_result);
+}
 ?>
 
 <div style="margin-bottom: 2rem;">
@@ -38,14 +61,15 @@ $gpa_record = mysqli_fetch_assoc($gpa_result);
         <div class="form-group" style="max-width: 300px;">
             <label for="student_id">Select Student:</label>
             <select name="student_id" id="student_id" class="form-control" onchange="this.form.submit()">
-                <?php 
-                mysqli_data_seek($students_result, 0); // Reset pointer
-                while ($s = mysqli_fetch_assoc($students_result)): 
-                ?>
-                    <option value="<?php echo $s['id']; ?>" <?php echo $s['id'] == $selected_student_id ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars($s['name']); ?>
-                    </option>
-                <?php endwhile; ?>
+                <?php if (!empty($students)): ?>
+                    <?php foreach ($students as $s): ?>
+                        <option value="<?php echo (int)$s['id']; ?>" <?php echo $s['id'] == $selected_student_id ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($s['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <option value="">No students available</option>
+                <?php endif; ?>
             </select>
         </div>
     </form>
@@ -108,25 +132,28 @@ $gpa_record = mysqli_fetch_assoc($gpa_result);
             <tbody>
                 <?php
                 // Fetch courses for this student
-                $courses_stmt = mysqli_prepare($conn,
-                    "SELECT c.course_code, c.course_title, c.credit_unit
-                     FROM courses c
-                     JOIN student_courses sc ON c.id = sc.course_id
-                     WHERE sc.student_id = ?
-                     ORDER BY c.course_code"
-                );
-                mysqli_stmt_bind_param($courses_stmt, "i", $selected_student_id);
-                mysqli_stmt_execute($courses_stmt);
-                $courses_result = mysqli_stmt_get_result($courses_stmt);
-                
                 $total_credits = 0;
-                while ($course = mysqli_fetch_assoc($courses_result)) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($course['course_code']) . "</td>";
-                    echo "<td>" . htmlspecialchars($course['course_title']) . "</td>";
-                    echo "<td>" . htmlspecialchars($course['credit_unit']) . "</td>";
-                    echo "</tr>";
-                    $total_credits += $course['credit_unit'];
+                if ($selected_student_id > 0) {
+                    $courses_stmt = mysqli_prepare($conn,
+                        "SELECT c.course_code, c.course_title, c.credit_unit
+                         FROM courses c
+                         JOIN student_courses sc ON c.id = sc.course_id
+                         WHERE sc.student_id = ?
+                         ORDER BY c.course_code"
+                    );
+                    if ($courses_stmt) {
+                        mysqli_stmt_bind_param($courses_stmt, "i", $selected_student_id);
+                        mysqli_stmt_execute($courses_stmt);
+                        $courses_result = mysqli_stmt_get_result($courses_stmt);
+                        while ($course = mysqli_fetch_assoc($courses_result)) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($course['course_code']) . "</td>";
+                            echo "<td>" . htmlspecialchars($course['course_title']) . "</td>";
+                            echo "<td>" . htmlspecialchars($course['credit_unit']) . "</td>";
+                            echo "</tr>";
+                            $total_credits += $course['credit_unit'];
+                        }
+                    }
                 }
                 ?>
                 <tr style="font-weight: bold; background: #f0f8ff;">

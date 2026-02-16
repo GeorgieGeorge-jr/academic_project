@@ -104,7 +104,8 @@ INSERT INTO students (matric_number, name, blood_group, state_of_origin, phone, 
 ('22/0115', 'Ezembaukwu Vincent', 'O+', 'Anambra State', '09068936312', 'Watching movies, Music'),
 ('22/0127', 'Kalu Joshua Uwaoma', 'O+', 'Abia state', '08064270255', 'Music'),
 ('22/0087', 'Eze Sandra', 'O-', 'Anambra state', '09075892154', 'Playing games, Seeing Movies'),
-('22/0088', 'Eze-Bekee David', 'A+', 'Abia state', '08123199386', 'Playing games, Watching Series');
+('22/0088', 'Eze-Bekee David', 'A+', 'Abia state', '08123199386', 'Playing games, Watching Series'),
+('22/0299', 'Chidubem Iwuh', 'O+', 'Imo state', '08120787401', 'Books');
 
 INSERT INTO courses (course_code, course_title, credit_unit) VALUES
 ('SENG412', 'Internet Technologies', 3),
