@@ -4,7 +4,7 @@ require_once '../config/db.php';
 
 // Check if form was submitted
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: gpa.php');
+    header('Location: payroll.php');
     exit();
 }
 
